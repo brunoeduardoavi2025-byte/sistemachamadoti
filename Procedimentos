@@ -11,13 +11,9 @@ CREATE DATABASE chamadosdb;
 Você pode usar o Spring Initializr com estas dependências:
 
 Spring Web
-
 Spring Data JPA
-
 Spring Security
-
 MySQL Driver
-
 Thymeleaf
 
 Baixe o projeto e importe no seu IDE.
