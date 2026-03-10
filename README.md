@@ -105,3 +105,37 @@ O sistema envia relatórios em PDF diariamente às 8h para o email configurado n
 
 📝 Licença
 Este projeto é livre para uso e modificação.
+
+✅ Passo a passo para instalar o Maven no Windows
+1. Baixar o Maven
+Acesse: https://maven.apache.org/download.cgi (maven.apache.org in Bing)
+Baixe a versão binária ZIP (ex: apache-maven-3.9.6-bin.zip)
+
+2. Extrair e mover
+Extraia o ZIP para uma pasta permanente, ex:
+C:\Program Files\Apache\Maven
+
+3. Configurar variáveis de ambiente
+Abra o menu Iniciar → digite “variáveis de ambiente”
+Clique em Variáveis de Ambiente
+Em “Variáveis do sistema”:
+Adicione uma nova variável:
+Nome: MAVEN_HOME
+Valor: C:\Program Files\Apache\Maven
+Edite a variável Path e adicione:
+C:\Program Files\Apache\Maven\bin
+
+4. Testar no terminal
+Feche e reabra o PowerShell ou CMD
+Digite: mvn -v
+Se aparecer a versão do Maven e do Java, está tudo certo!
+
+🧪 Exemplo de saída esperada
+Apache Maven 3.9.6
+Java version: 17.0.10, vendor: Oracle Corporation
+
+Depois disso, volte para sua pasta do projeto e rode:
+mvn clean install
+
+Isso vai baixar todas as dependências e resolver os erros de importação na sua IDE.
+
