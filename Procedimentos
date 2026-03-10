@@ -1,0 +1,129 @@
+🛠️ Passo 1: Preparar o ambiente
+Instale o Java 17 (ou superior).
+
+Instale o Maven (ou use o Maven embutido no IntelliJ/Eclipse).
+
+Instale o MySQL e crie um banco de dados chamado chamadosdb.
+
+sql
+CREATE DATABASE chamadosdb;
+📦 Passo 2: Criar projeto Spring Boot
+Você pode usar o Spring Initializr com estas dependências:
+
+Spring Web
+
+Spring Data JPA
+
+Spring Security
+
+MySQL Driver
+
+Thymeleaf
+
+Baixe o projeto e importe no seu IDE.
+
+⚙️ Passo 3: Configurar application.properties
+properties
+spring.datasource.url=jdbc:mysql://localhost:3306/chamadosdb
+spring.datasource.username=root
+spring.datasource.password=sua_senha
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQLDialect
+spring.thymeleaf.cache=false
+
+🧩 Passo 4: Criar entidades
+Já vimos antes as classes Usuario e Chamado.
+Elas devem estar anotadas com @Entity e ter @Id.
+
+📚 Passo 5: Criar repositórios
+java
+public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
+    Usuario findByEmail(String email);
+}
+java
+public interface ChamadoRepository extends JpaRepository<Chamado, Long> {
+}
+
+🔐 Passo 6: Configurar segurança
+Crie uma classe SecurityConfig para login com formulário:
+
+java
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/chamados/**").authenticated()
+                .anyRequest().permitAll()
+            )
+            .formLogin()
+            .and()
+            .logout();
+        return http.build();
+    }
+}
+
+🌐 Passo 7: Criar controladores
+java
+@Controller
+public class ChamadoController {
+    private final ChamadoService chamadoService;
+
+    public ChamadoController(ChamadoService chamadoService) {
+        this.chamadoService = chamadoService;
+    }
+
+    @GetMapping("/chamados")
+    public String listarChamados(Model model) {
+        model.addAttribute("chamados", chamadoService.listarChamados());
+        return "chamados";
+    }
+
+    @PostMapping("/chamados")
+    public String abrirChamado(@RequestParam String descricao, @AuthenticationPrincipal Usuario usuario) {
+        chamadoService.abrirChamado(descricao, usuario);
+        return "redirect:/chamados";
+    }
+}
+🎨 Passo 8: Criar páginas Thymeleaf
+templates/chamados.html
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Chamados de TI</title>
+</head>
+<body>
+<h1>Lista de Chamados</h1>
+<form action="/chamados" method="post">
+    <input type="text" name="descricao" placeholder="Descrição do chamado"/>
+    <button type="submit">Abrir Chamado</button>
+</form>
+
+<ul>
+    <li th:each="c : ${chamados}">
+        <span th:text="${c.descricao}"></span> - 
+        <span th:text="${c.status}"></span>
+    </li>
+</ul>
+</body>
+</html>
+
+
+▶️ Passo 9: Rodar aplicação
+No terminal:
+mvn spring-boot:run
+
+Depois acesse:
+👉 http://localhost:8080/chamados
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+🚀 Próximos upgrades
+Tela de login/cadastro de usuários.
+Diferenciar ROLE_USER (abre chamados) e ROLE_ADMIN (fecha chamados).
+Adicionar prioridade e categoria aos chamados.
+Criar dashboard com estatísticas.
+
